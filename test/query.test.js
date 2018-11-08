@@ -1086,12 +1086,37 @@ describe('Query', function() {
       const Product = db.model('Product');
       const promise = Product.findOne();
 
-      promise.then(function() {
+      promise.then(function(doc) {
         done();
       }, function(err) {
         assert.ifError(err);
       });
     });
+
+    it('promise resolves with a single document', function(done) {
+      const Product = db.model('Product');
+      const promise = Product.findOne().rejectIfNotFound(true);
+
+      promise.then(function(doc) {
+        assert.notNull(doc);
+        done();
+      }, function(err) {
+        assert.ifError(err);
+      });
+    });
+
+
+    it('rejects if document not found'), function(done) {
+      const Product = db.model('Product');
+      const id = new DocumentObjectId;
+      const promise = Product.findById(id).rejectIfNotFound(true);
+
+      promise.then(function(doc) {
+        assert.notNull(doc);
+      }, function() {
+        done();
+      });
+    }
   });
 
   describe('deleteOne/deleteMany', function() {
